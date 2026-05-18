@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
-    cb(null, file.originalname + "-" + uniqueSuffix);
+    cb(null, uniqueSuffix + "-" + file.originalname);
   },
 });
 const uploadWithStorage = multer({ storage: storage });
@@ -33,11 +33,15 @@ app.get("/", (req, res) => {
 
 // });
 
-app.post("/upload", upload.single("file"), function (req, res, next) {
-  console.log("File uploaded");
-  console.log(req.file);
-  return res.redirect("/");
-});
+app.post(
+  "/upload",
+  uploadWithStorage.single("file"),
+  function (req, res, next) {
+    console.log("File uploaded");
+    console.log(req.file);
+    return res.redirect("/");
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
